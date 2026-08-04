@@ -122,14 +122,17 @@ class ProductDetailView(DetailView):
         context["reviews"] = self.object.reviews.all()
 
         context["average_rating"] = (
-
             self.object.reviews.aggregate(
-
                 Avg("rating")
-
             )["rating__avg"]
-
         )
+
+        context["related_products"] = Product.objects.filter(
+            category=self.object.category,
+            available=True
+        ).exclude(
+            id=self.object.id
+        )[:4]
 
         return context
 
