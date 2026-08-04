@@ -3,63 +3,228 @@
 {% block content %}
 
 <h2 class="mb-4">
-
-Products
-
+    Products
 </h2>
+
+<form method="GET">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search..."
+        value="{{ request.GET.q }}"
+    >
+
+    <select name="category">
+
+        <option value="">All Categories</option>
+
+        {% for category in categories %}
+
+            <option
+                value="{{ category.slug }}"
+                {% if request.GET.category == category.slug %}
+                    selected
+                {% endif %}
+            >
+                {{ category.name }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+    <select name="brand">
+
+        <option value="">All Brands</option>
+
+        {% for brand in brands %}
+
+            <option
+                value="{{ brand.id }}"
+                {% if request.GET.brand == brand.id|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+                {{ brand.name }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+    <select name="sort">
+
+        <option value="">Sort By</option>
+
+        <option
+            value="newest"
+            {% if request.GET.sort == "newest" %}
+                selected
+            {% endif %}
+        >
+            Newest
+        </option>
+
+        <option
+            value="price_low"
+            {% if request.GET.sort == "price_low" %}
+                selected
+            {% endif %}
+        >
+            Price Low → High
+        </option>
+
+        <option
+            value="price_high"
+            {% if request.GET.sort == "price_high" %}
+                selected
+            {% endif %}
+        >
+            Price High → Low
+        </option>
+
+        <option
+            value="name"
+            {% if request.GET.sort == "name" %}
+                selected
+            {% endif %}
+        >
+            Name
+        </option>
+
+    </select>
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<hr>
 
 <div class="row">
 
 {% for product in products %}
 
-<div class="col-md-3 mb-4">
+    <div class="col-md-3 mb-4">
 
-<div class="card h-100">
+        <div class="card h-100">
 
-{% if product.images.first %}
+            {% if product.images.first %}
 
-<img
-src="{{ product.images.first.image.url }}"
-class="card-img-top"
-height="220">
+                <img
+                    src="{{ product.images.first.image.url }}"
+                    class="card-img-top"
+                    height="220"
+                >
+
+            {% endif %}
+
+            <div class="card-body">
+
+                <h5>
+
+                    {{ product.name }}
+
+                </h5>
+
+                <p>
+
+                    <strong>Brand:</strong>
+                    {{ product.brand }}
+
+                </p>
+
+                <p>
+
+                    <strong>Category:</strong>
+                    {{ product.category }}
+
+                </p>
+
+                <h4>
+
+                    ${{ product.price }}
+
+                </h4>
+
+                <a
+                    href="{% url 'product_detail' product.slug %}"
+                    class="btn btn-primary"
+                >
+
+                    View Details
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% empty %}
+
+    <div class="col-12">
+
+        <p>
+
+            No products found.
+
+        </p>
+
+    </div>
+
+{% endfor %}
+
+</div>
+
+<hr>
+
+<div>
+
+{% if page_obj.has_previous %}
+
+    <a href="?page=1&q={{ request.GET.q }}&category={{ request.GET.category }}&brand={{ request.GET.brand }}&sort={{ request.GET.sort }}">
+
+        First
+
+    </a>
+
+    <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&category={{ request.GET.category }}&brand={{ request.GET.brand }}&sort={{ request.GET.sort }}">
+
+        Previous
+
+    </a>
 
 {% endif %}
 
-<div class="card-body">
+<span>
 
-<h5>
+    Page {{ page_obj.number }}
 
-{{ product.name }}
+    of
 
-</h5>
+    {{ page_obj.paginator.num_pages }}
 
-<p>
+</span>
 
-{{ product.brand }}
+{% if page_obj.has_next %}
 
-</p>
+    <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&category={{ request.GET.category }}&brand={{ request.GET.brand }}&sort={{ request.GET.sort }}">
 
-<h4>
+        Next
 
-${{ product.price }}
+    </a>
 
-</h4>
+    <a href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q }}&category={{ request.GET.category }}&brand={{ request.GET.brand }}&sort={{ request.GET.sort }}">
 
-<a
-href="{% url 'product_detail' product.slug %}"
-class="btn btn-primary">
+        Last
 
-View
+    </a>
 
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-{% endfor %}
+{% endif %}
 
 </div>
 
