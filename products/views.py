@@ -3,13 +3,13 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import ListView, DetailView
 from .models import Product
-
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, get_object_or_404
+from .models import Wishlist
 from django.views.generic import ListView
 from django.db.models import Q
-
 from .models import Product, Category, Brand
-
+from django.contrib import messages
 
 class ProductListView(ListView):
 
@@ -107,3 +107,78 @@ class ProductDetailView(DetailView):
     slug_field = "slug"
 
     slug_url_kwarg = "slug"
+
+@login_required
+def add_to_wishlist(request, product_id):
+
+    product = get_object_or_404(
+        Product,
+        id=product_id
+    )
+
+    Wishlist.objects.get_or_create(
+
+        user=request.user,
+
+        product=product
+
+    )
+
+    messages.success(
+
+        request,
+
+        "Added to wishlist."
+
+    )
+
+    return redirect(
+        "product_detail",
+        slug=product.slug
+    )
+
+
+@login_required
+def wishlist(request):
+
+    wishlist = Wishlist.objects.filter(
+
+        user=request.user
+
+    ).select_related("product")
+
+    return render(
+
+        request,
+
+        "products/wishlist.html",
+
+        {
+
+            "wishlist": wishlist
+
+        }
+
+    )
+
+
+@login_required
+def remove_from_wishlist(request, product_id):
+
+    Wishlist.objects.filter(
+
+        user=request.user,
+
+        product_id=product_id
+
+    ).delete()
+
+    messages.success(
+
+        request,
+
+        "Removed from wishlist."
+
+    )
+
+    return redirect("wishlist")

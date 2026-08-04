@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Category, Brand, Product, ProductImage, Review
-
+from .models import Wishlist
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -113,3 +113,12 @@ class ReviewAdmin(admin.ModelAdmin):
         "rating",
     ]
 
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "user",
+        "product",
+        "created_at",
+    )

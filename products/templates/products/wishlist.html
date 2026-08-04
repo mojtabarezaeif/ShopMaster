@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>
+
+My Wishlist
+
+</h2>
+
+<div class="row">
+
+{% for item in wishlist %}
+
+<div class="col-md-3">
+
+<div class="card mb-4">
+
+{% if item.product.images.first %}
+
+<img
+
+src="{{ item.product.images.first.image.url }}"
+
+class="card-img-top"
+
+height="220">
+
+{% endif %}
+
+<div class="card-body">
+
+<h5>
+
+{{ item.product.name }}
+
+</h5>
+
+<h4>
+
+${{ item.product.price }}
+
+</h4>
+
+<a
+
+href="{% url 'product_detail' item.product.slug %}"
+
+class="btn btn-primary btn-sm"
+
+>
+
+View
+
+</a>
+
+<a
+
+href="{% url 'cart_add' item.product.id %}"
+
+class="btn btn-success btn-sm"
+
+>
+
+Add to Cart
+
+</a>
+
+<a
+
+href="{% url 'remove_from_wishlist' item.product.id %}"
+
+class="btn btn-danger btn-sm"
+
+>
+
+Remove
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<p>
+
+Wishlist is empty.
+
+</p>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
