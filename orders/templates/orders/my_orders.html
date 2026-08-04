@@ -2,55 +2,105 @@
 
 {% block content %}
 
-<h2>
-
-My Orders
-
-</h2>
-
-{% if orders %}
-
-<table class="table table-bordered">
-
-<tr>
-
-<th>ID</th>
-
-<th>Name</th>
-
-<th>Email</th>
-
-<th>Date</th>
-
-</tr>
+<h2>My Orders</h2>
 
 {% for order in orders %}
 
-<tr>
+<div class="card mb-4">
 
-<td>
+<div class="card-header">
 
-{{ order.id }}
+Order #{{ order.id }}
 
-</td>
+<p>
 
-<td>
+Status:
 
-{{ order.full_name }}
+{% if order.status == "pending" %}
 
-</td>
+<span class="badge bg-warning text-dark">
 
-<td>
+Pending
 
-{{ order.email }}
+</span>
 
-</td>
+{% elif order.status == "paid" %}
 
-<td>
+<span class="badge bg-primary">
+
+Paid
+
+</span>
+
+{% elif order.status == "processing" %}
+
+<span class="badge bg-info text-dark">
+
+Processing
+
+</span>
+
+{% elif order.status == "shipped" %}
+
+<span class="badge bg-secondary">
+
+Shipped
+
+</span>
+
+{% elif order.status == "delivered" %}
+
+<span class="badge bg-success">
+
+Delivered
+
+</span>
+
+{% elif order.status == "cancelled" %}
+
+<span class="badge bg-danger">
+
+Cancelled
+
+</span>
+
+{% endif %}
+
+</p>
+
+<br>
 
 {{ order.created_at }}
 
-</td>
+</div>
+
+<div class="card-body">
+
+<table class="table">
+
+<tr>
+
+<th>Product</th>
+
+<th>Price</th>
+
+<th>Qty</th>
+
+<th>Total</th>
+
+</tr>
+
+{% for item in order.items.all %}
+
+<tr>
+
+<td>{{ item.product.name }}</td>
+
+<td>${{ item.price }}</td>
+
+<td>{{ item.quantity }}</td>
+
+<td>${{ item.total_price }}</td>
 
 </tr>
 
@@ -58,14 +108,22 @@ My Orders
 
 </table>
 
-{% else %}
+<h5 class="text-end">
 
-<p>
+Grand Total:
 
-No orders found.
+${{ order.total_price }}
 
-</p>
+</h5>
 
-{% endif %}
+</div>
+
+</div>
+
+{% empty %}
+
+<p>No orders found.</p>
+
+{% endfor %}
 
 {% endblock %}

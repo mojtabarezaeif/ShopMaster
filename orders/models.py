@@ -25,10 +25,39 @@ class Order(models.Model):
         blank=True,
     )
 
+    STATUS_CHOICES = [
+
+        ("pending", "Pending"),
+        ("paid", "Paid"),
+        ("processing", "Processing"),
+        ("shipped", "Shipped"),
+        ("delivered", "Delivered"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending",
+    )
+
     def __str__(self):
 
         return f"Order {self.id}"
 
+    @property
+    def total_price(self):
+
+        return sum(
+
+            item.total_price
+
+            for item in self.items.all()
+
+        )
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class OrderItem(models.Model):
@@ -56,5 +85,10 @@ class OrderItem(models.Model):
 
 
     def get_total_price(self):
+
+        return self.price * self.quantity
+
+    @property
+    def total_price(self):
 
         return self.price * self.quantity
