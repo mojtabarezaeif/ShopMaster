@@ -1,11 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>ShopMaster</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Welcome to ShopMaster</h1>
+{% block content %}
 
-</body>
-</html>
+<div class="text-center">
+
+<h1>
+
+Welcome to ShopMaster
+
+</h1>
+
+<p>
+
+Professional Django E-commerce Website
+
+</p>
+
+<a
+class="btn btn-primary btn-lg"
+href="/products/">
+
+Browse Products
+
+</a>
+
+</div>
+
+{% endblock %}
