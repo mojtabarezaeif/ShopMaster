@@ -18,6 +18,7 @@ class OrderAdmin(admin.ModelAdmin):
         "id",
         "full_name",
         "status",
+        "transaction_id",
         "created_at",
     )
 

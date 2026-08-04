@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Payment</h2>
+
+<p>
+
+This page will connect to the payment gateway.
+
+</p>
+
+<a
+href="{% url 'payment_success' %}"
+class="btn btn-success"
+>
+
+Simulate Successful Payment
+
+</a>
+
+<a
+href="{% url 'payment_failed' %}"
+class="btn btn-danger"
+>
+
+Simulate Failed Payment
+
+</a>
+
+{% endblock %}

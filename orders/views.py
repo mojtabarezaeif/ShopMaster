@@ -33,6 +33,7 @@ def checkout(request):
                 address=form.cleaned_data["address"],
             )
 
+            request.session["order_id"] = order.id
 
             for item in cart:
 
@@ -53,7 +54,7 @@ def checkout(request):
             cart.clear()
 
 
-            return redirect("cart_detail")
+            return redirect("payment_page")
 
 
     else:

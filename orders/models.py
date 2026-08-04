@@ -41,6 +41,16 @@ class Order(models.Model):
         default="pending",
     )
 
+    transaction_id = models.CharField(
+        max_length=100,
+        blank=True
+    )
+
+    paid_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
 
         return f"Order {self.id}"

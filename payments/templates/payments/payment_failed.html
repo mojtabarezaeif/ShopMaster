@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-danger">
+
+Payment Failed
+
+</h2>
+
+<p>
+
+Please try again.
+
+</p>
+
+<a
+href="{% url 'payment_page' %}"
+class="btn btn-warning"
+>
+
+Try Again
+
+</a>
+
+{% endblock %}
