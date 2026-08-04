@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+
+<div class="col-md-6">
+
+{% if product.images.first %}
+
+<img
+
+src="{{ product.images.first.image.url }}"
+
+class="img-fluid">
+
+{% endif %}
+
+</div>
+
+<div class="col-md-6">
+
+<h2>
+
+{{ product.name }}
+
+</h2>
+
+<h4>
+
+${{ product.price }}
+
+</h4>
+
+<p>
+
+{{ product.description }}
+
+</p>
+
+<p>
+
+Brand:
+
+{{ product.brand }}
+
+</p>
+
+<p>
+
+Category:
+
+{{ product.category }}
+
+</p>
+
+<p>
+
+Stock:
+
+{{ product.stock }}
+
+</p>
+
+</div>
+
+</div>
+
+{% endblock %}
