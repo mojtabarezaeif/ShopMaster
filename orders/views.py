@@ -6,6 +6,11 @@ from .forms import OrderForm
 from .models import Order, OrderItem
 from cart.cart import Cart
 from django.contrib.auth.decorators import login_required
+from .models import Coupon
+from .forms import CouponApplyForm
+from django.utils import timezone
+from django.contrib import messages
+
 
 def checkout(request):
 
@@ -87,3 +92,52 @@ def my_orders(request):
             "orders": orders
         }
     )
+
+
+def apply_coupon(request):
+
+    if request.method == "POST":
+
+        form = CouponApplyForm(request.POST)
+
+        if form.is_valid():
+
+            code = form.cleaned_data["code"]
+
+            coupon = Coupon.objects.filter(
+
+                code__iexact=code,
+
+                active=True,
+
+                valid_from__lte=timezone.now(),
+
+                valid_to__gte=timezone.now()
+
+            ).first()
+
+            if coupon:
+
+                request.session["coupon_id"] = coupon.id
+
+                messages.success(
+
+                    request,
+
+                    "Coupon applied."
+
+                )
+
+            else:
+
+                request.session["coupon_id"] = None
+
+                messages.error(
+
+                    request,
+
+                    "Invalid coupon."
+
+                )
+
+    return redirect("cart_detail")

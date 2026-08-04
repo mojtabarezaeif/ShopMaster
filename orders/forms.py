@@ -12,3 +12,10 @@ class OrderForm(forms.Form):
     address = forms.CharField(
         widget=forms.Textarea
     )
+    
+
+class CouponApplyForm(forms.Form):
+
+    code = forms.CharField(
+        max_length=30
+    )

@@ -92,3 +92,26 @@ class OrderItem(models.Model):
     def total_price(self):
 
         return self.price * self.quantity
+
+from django.utils import timezone
+
+class Coupon(models.Model):
+
+    code = models.CharField(
+        max_length=30,
+        unique=True
+    )
+
+    discount = models.PositiveIntegerField()
+
+    active = models.BooleanField(
+        default=True
+    )
+
+    valid_from = models.DateTimeField()
+
+    valid_to = models.DateTimeField()
+
+    def __str__(self):
+
+        return self.code

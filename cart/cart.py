@@ -1,5 +1,5 @@
 from decimal import Decimal
-
+from orders.models import Coupon
 from products.models import Product
 
 
@@ -116,3 +116,46 @@ class Cart:
                 del self.cart[product_id]
 
             self.save()
+
+    def get_discount(self):
+
+        coupon_id = self.session.get("coupon_id")
+
+        if coupon_id:
+
+            coupon = Coupon.objects.filter(
+
+                id=coupon_id,
+
+                active=True
+
+            ).first()
+
+            if coupon:
+
+                return (
+
+                    self.get_total_price()
+
+                    *
+
+                    coupon.discount
+
+                    / 100
+
+                )
+
+        return 0
+
+
+    def get_final_price(self):
+
+        return (
+
+            self.get_total_price()
+
+            -
+
+            self.get_discount()
+
+        )

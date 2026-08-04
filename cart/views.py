@@ -2,9 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import redirect, get_object_or_404
-
 from products.models import Product
-
 from .cart import Cart
 from django.contrib import messages
 

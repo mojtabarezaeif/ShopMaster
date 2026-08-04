@@ -114,11 +114,58 @@ Cart ({{ cart|length }})
 
 </a>
 
+<hr>
+
+<form
+method="POST"
+action="{% url 'apply_coupon' %}"
+>
+
+{% csrf_token %}
+
+<input
+
+type="text"
+
+name="code"
+
+placeholder="Coupon Code"
+
+>
+
+<button
+
+class="btn btn-success"
+
+>
+
+Apply Coupon
+
+</button>
+
+</form>
+
+<p>
+
+Subtotal:
+
+${{ cart.get_total_price }}
+
+</p>
+
+<p>
+
+Discount:
+
+${{ cart.get_discount }}
+
+</p>
+
 <h3>
 
 Grand Total:
 
-${{ cart.get_total_price }}
+${{ cart.get_final_price }}
 
 </h3>
 
