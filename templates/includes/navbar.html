@@ -2,50 +2,89 @@
 
 <div class="container">
 
-<a class="navbar-brand"
-href="/">ShopMaster</a>
+<a class="navbar-brand" href="/">ShopMaster</a>
 
-<button
-class="navbar-toggler"
-type="button"
-data-bs-toggle="collapse"
-data-bs-target="#navbarNav">
-
-<span class="navbar-toggler-icon"></span>
-
-</button>
-
-<div
-class="collapse navbar-collapse"
-id="navbarNav">
+<div class="collapse navbar-collapse">
 
 <ul class="navbar-nav ms-auto">
 
 <li class="nav-item">
+<a class="nav-link" href="{% url 'product_list' %}">
+Products
+</a>
+</li>
 
-<a class="nav-link" href="/">Home</a>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'cart_detail' %}">
+Cart
+</a>
+</li>
+
+{% if user.is_authenticated %}
+
+<li class="nav-item">
+
+<span class="nav-link">
+
+{{ user.username }}
+
+</span>
 
 </li>
 
 <li class="nav-item">
 
-<!-- <a class="nav-link" href="/products/">Products</a> -->
+<form
+action="{% url 'logout' %}"
+method="post"
+style="display:inline;"
+>
 
-<a class="nav-link" href="{% url 'product_list' %}"> Products </a>
+{% csrf_token %}
+
+<button
+type="submit"
+class="btn btn-link nav-link"
+style="border:none;"
+>
+
+Logout
+
+</button>
+
+</form>
+
+</li>
+
+{% else %}
+
+<li class="nav-item">
+
+<a
+class="nav-link"
+href="{% url 'login' %}"
+>
+
+Login
+
+</a>
 
 </li>
 
 <li class="nav-item">
 
-<a class="nav-link" href="/cart/">Cart</a>
+<a
+class="nav-link"
+href="{% url 'register' %}"
+>
+
+Register
+
+</a>
 
 </li>
 
-<li class="nav-item">
-
-<a class="nav-link" href="/accounts/login/">Login</a>
-
-</li>
+{% endif %}
 
 </ul>
 

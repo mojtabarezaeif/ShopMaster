@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from .forms import OrderForm
 from .models import Order, OrderItem
 from cart.cart import Cart
@@ -50,9 +50,7 @@ def checkout(request):
             cart.clear()
 
 
-            return redirect(
-                "order_success"
-            )
+            return redirect("cart_detail")
 
 
     else:
@@ -75,3 +73,4 @@ def checkout(request):
         }
 
     )
+
