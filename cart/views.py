@@ -6,7 +6,7 @@ from django.shortcuts import redirect, get_object_or_404
 from products.models import Product
 
 from .cart import Cart
-
+from django.contrib import messages
 
 def cart_add(request, product_id):
 
@@ -18,6 +18,14 @@ def cart_add(request, product_id):
     )
 
     cart.add(product)
+
+    messages.success(
+
+        request,
+
+        "Product added to cart."
+
+    )
 
     return redirect("cart_detail")
 
@@ -50,5 +58,30 @@ def cart_remove(request, product_id):
     )
 
     cart.remove(product)
+
+    messages.success(
+        request,
+        "Product removed from cart."
+    )
+
+    return redirect("cart_detail")
+
+def cart_update(request, product_id):
+
+    cart = Cart(request)
+
+    product = get_object_or_404(
+        Product,
+        id=product_id
+    )
+
+    quantity = int(request.POST.get("quantity"))
+
+    cart.update(product, quantity)
+
+    messages.success(
+        request,
+        "Cart updated successfully."
+    )
 
     return redirect("cart_detail")

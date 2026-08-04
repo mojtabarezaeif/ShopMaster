@@ -25,6 +25,20 @@
 
 {% include "includes/navbar.html" %}
 
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="alert alert-success">
+
+            {{ message }}
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
 <div class="container mt-4">
 
     {% block content %}

@@ -102,3 +102,17 @@ class Cart:
             total += item["total_price"]
 
         return total
+
+    def update(self, product, quantity):
+
+        product_id = str(product.id)
+
+        if product_id in self.cart:
+
+            self.cart[product_id]["quantity"] = quantity
+
+            if quantity <= 0:
+
+                del self.cart[product_id]
+
+            self.save()
