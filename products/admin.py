@@ -17,20 +17,43 @@ class BrandAdmin(admin.ModelAdmin):
 
     list_display = ["id", "name"]
 
+from django.utils.html import format_html
+
+class ProductImageInline(admin.TabularInline):
+
+    model = ProductImage
+
+    extra = 1
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
     list_display = [
         "id",
+        "image_preview",
         "name",
         "category",
         "brand",
         "price",
         "stock",
         "available",
-        "created_at",
     ]
+
+    def image_preview(self, obj):
+
+        image = obj.images.first()
+
+        if image:
+
+            return format_html(
+
+                '<img src="{}" width="70">',
+
+                image.image.url
+
+            )
+
+        return "-"
 
     list_filter = [
         "category",
@@ -51,6 +74,9 @@ class ProductAdmin(admin.ModelAdmin):
         "slug": ("name",)
     }
 
+    inlines = [
+        ProductImageInline,
+    ]
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
@@ -61,7 +87,17 @@ class ProductImageAdmin(admin.ModelAdmin):
         "image",
     ]
 
+    def thumbnail(self, obj):
 
+        if obj.image:
+
+            return format_html(
+                '<img src="{}" width="70">',
+                obj.image.url
+            )
+
+        return "-"
+    
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
 
@@ -76,3 +112,4 @@ class ReviewAdmin(admin.ModelAdmin):
     list_filter = [
         "rating",
     ]
+
