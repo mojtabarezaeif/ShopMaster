@@ -29,6 +29,12 @@ urlpatterns = [
     ),
 
     path(
+        "<slug:slug>/review/",
+        views.add_review,
+        name="add_review"
+    ),
+
+    path(
         "<slug:slug>/",
         ProductDetailView.as_view(),
         name="product_detail"

@@ -79,7 +79,8 @@ class Review(models.Model):
 
     product = models.ForeignKey(
         Product,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="reviews"
     )
 
     user = models.ForeignKey(
@@ -91,10 +92,22 @@ class Review(models.Model):
 
     comment = models.TextField()
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+
+        ordering = ["-created_at"]
+
+        unique_together = (
+            "product",
+            "user"
+        )
 
     def __str__(self):
-        return f"{self.user} - {self.product}"
+
+        return f"{self.product} - {self.user}"
 
 
 class Wishlist(models.Model):

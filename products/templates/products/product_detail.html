@@ -4,84 +4,372 @@
 
 <div class="row">
 
-<div class="col-md-6">
+    <!-- Product Image -->
+    <div class="col-md-6">
 
-{% if product.images.first %}
+        {% if product.images.first %}
 
-<img
+        <img
+        src="{{ product.images.first.image.url }}"
+        class="img-fluid rounded">
 
-src="{{ product.images.first.image.url }}"
+        {% endif %}
 
-class="img-fluid">
+    </div>
+
+
+    <!-- Product Information -->
+    <div class="col-md-6">
+
+
+        <h2>
+
+            {{ product.name }}
+
+        </h2>
+
+
+        <h4 class="text-success">
+
+            ${{ product.price }}
+
+        </h4>
+
+
+        <p>
+
+            {{ product.description }}
+
+        </p>
+
+
+        <p>
+
+            Brand:
+
+            <strong>
+                {{ product.brand }}
+            </strong>
+
+        </p>
+
+
+        <p>
+
+            Category:
+
+            <strong>
+                {{ product.category }}
+            </strong>
+
+        </p>
+
+        <!-- Stock -->
+
+        <p>
+
+        Stock:
+
+        {% if product.stock > 0 %}
+
+            <span class="text-success">
+
+                {{ product.stock }} Available
+
+            </span>
+
+
+        {% else %}
+
+            <span class="text-danger">
+
+                Out of Stock
+
+            </span>
+
+
+        {% endif %}
+
+        </p>
+
+
+
+        <!-- Buttons -->
+
+        {% if product.stock > 0 %}
+
+
+        <a
+        href="{% url 'cart_add' product.id %}"
+        class="btn btn-success me-2">
+
+            Add to Cart
+
+        </a>
+
+
+        {% else %}
+
+
+        <button
+        class="btn btn-secondary"
+        disabled>
+
+            Out of Stock
+
+        </button>
+
+
+        {% endif %}
+
+
+
+        <a
+        href="{% url 'add_to_wishlist' product.id %}"
+        class="btn btn-outline-danger">
+
+            ❤ Add to Wishlist
+
+        </a>
+
+
+
+        <hr>
+
+
+
+        <!-- Average Rating -->
+
+
+        <h3>
+
+            Average Rating:
+
+            {% if average_rating %}
+
+                {{ average_rating|floatformat:1 }}
+
+                ⭐
+
+
+            {% else %}
+
+                No Rating
+
+
+            {% endif %}
+
+
+        </h3>
+
+
+
+        <hr>
+
+
+
+        <!-- Add Review -->
+
+
+        <h3>
+
+            Write Review
+
+        </h3>
+
+
+
+        {% if user.is_authenticated %}
+
+
+        <form
+
+        method="POST"
+
+        action="{% url 'add_review' product.slug %}"
+
+        >
+
+
+        {% csrf_token %}
+
+<div class="mb-3">
+
+<label>
+
+Rating:
+
+</label>
+
+
+<div class="rating">
+
+{% for radio in form.rating %}
+
+<label class="star">
+
+{{ radio.tag }}
+
+{{ radio.choice_label }}
+
+</label>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+
+<div class="mb-3">
+
+<label>
+
+Comment:
+
+</label>
+
+{{ form.comment }}
+
+</div>
+
+        <button
+
+        class="btn btn-success">
+
+            Submit Review
+
+        </button>
+
+
+        </form>
+
+
+
+        {% else %}
+
+
+        <p>
+
+            Please login to review this product.
+
+        </p>
+
+
+        {% endif %}
+
+
+
+    </div>
+
+</div>
+
+
+
+<hr>
+
+
+
+<!-- Customer Reviews -->
+
+
+<h3>
+
+Customer Reviews
+
+</h3>
+
+
+
+{% for review in reviews %}
+
+
+<div class="card mb-3">
+
+
+<div class="card-body">
+
+
+
+<strong>
+
+{{ review.user.username }}
+
+</strong>
+
+
+<br>
+
+
+
+Rating:
+
+
+{% if review.rating == 5 %}
+
+⭐⭐⭐⭐⭐
+
+{% elif review.rating == 4 %}
+
+⭐⭐⭐⭐
+
+{% elif review.rating == 3 %}
+
+⭐⭐⭐
+
+{% elif review.rating == 2 %}
+
+⭐⭐
+
+{% else %}
+
+⭐
 
 {% endif %}
 
-</div>
 
-<div class="col-md-6">
 
-<h2>
+<br><br>
 
-{{ product.name }}
 
-</h2>
 
-<h4>
+{{ review.comment }}
 
-${{ product.price }}
 
-</h4>
 
-<p>
+<br><br>
 
-{{ product.description }}
 
-</p>
 
-<p>
+<small class="text-muted">
 
-Brand:
+{{ review.created_at|date:"d M Y H:i" }}
 
-{{ product.brand }}
+</small>
 
-</p>
 
-<p>
-
-Category:
-
-{{ product.category }}
-
-</p>
-
-<p>
-
-Stock:
-
-{{ product.stock }}
-
-</p>
-
-<a
-href="{% url 'cart_add' product.id %}"
-class="btn btn-success"
->
-
-Add to Cart
-
-</a>
-
-<a
-href="{% url 'add_to_wishlist' product.id %}"
-class="btn btn-outline-danger"
->
-
-❤ Add to Wishlist
-
-</a>
 
 </div>
 
+
 </div>
+
+
+
+{% empty %}
+
+
+<p>
+
+No reviews yet.
+
+</p>
+
+
+
+{% endfor %}
+
+
 
 {% endblock %}

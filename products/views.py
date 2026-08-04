@@ -10,6 +10,11 @@ from django.views.generic import ListView
 from django.db.models import Q
 from .models import Product, Category, Brand
 from django.contrib import messages
+from .forms import ReviewForm
+from .models import Review
+from django.db.models import Avg
+
+from django.contrib.auth.decorators import login_required
 
 class ProductListView(ListView):
 
@@ -108,6 +113,26 @@ class ProductDetailView(DetailView):
 
     slug_url_kwarg = "slug"
 
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        context["form"] = ReviewForm()
+
+        context["reviews"] = self.object.reviews.all()
+
+        context["average_rating"] = (
+
+            self.object.reviews.aggregate(
+
+                Avg("rating")
+
+            )["rating__avg"]
+
+        )
+
+        return context
+
 @login_required
 def add_to_wishlist(request, product_id):
 
@@ -182,3 +207,53 @@ def remove_from_wishlist(request, product_id):
     )
 
     return redirect("wishlist")
+
+
+@login_required
+def add_review(request, slug):
+
+    product = get_object_or_404(
+
+        Product,
+
+        slug=slug
+
+    )
+
+    if request.method == "POST":
+
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+
+            Review.objects.update_or_create(
+
+                product=product,
+
+                user=request.user,
+
+                defaults={
+
+                    "rating": form.cleaned_data["rating"],
+
+                    "comment": form.cleaned_data["comment"]
+
+                }
+
+            )
+
+            messages.success(
+
+                request,
+
+                "Review saved."
+
+            )
+
+    return redirect(
+
+        "product_detail",
+
+        slug=slug
+
+    )
