@@ -64,3 +64,41 @@ class Cart:
             for item in self.cart.values()
 
         )
+
+
+    def __iter__(self):
+
+        product_ids = self.cart.keys()
+
+        products = Product.objects.filter(id__in=product_ids)
+
+        cart = self.cart.copy()
+
+        for product in products:
+
+            cart[str(product.id)]["product"] = product
+
+        for item in cart.values():
+
+            item["total_price"] = (
+
+                item["product"].price
+
+                *
+
+                item["quantity"]
+
+            )
+
+            yield item
+
+
+    def get_total_price(self):
+
+        total = Decimal("0")
+
+        for item in self:
+
+            total += item["total_price"]
+
+        return total
