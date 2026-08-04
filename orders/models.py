@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from products.models import Product
+from django.contrib.auth.models import User
 
 class Order(models.Model):
 
@@ -17,6 +18,12 @@ class Order(models.Model):
         auto_now_add=True
     )
 
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
 

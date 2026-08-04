@@ -9,5 +9,10 @@ urlpatterns = [
         name="checkout"
     ),
 
+    path(
+        "my-orders/",
+        views.my_orders,
+        name="my_orders",
+    ),
 
 ]

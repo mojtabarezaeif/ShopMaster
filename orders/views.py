@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from .forms import OrderForm
 from .models import Order, OrderItem
 from cart.cart import Cart
+from django.contrib.auth.decorators import login_required
 
 def checkout(request):
 
@@ -21,13 +22,10 @@ def checkout(request):
 
 
             order = Order.objects.create(
-
+                user=request.user if request.user.is_authenticated else None,
                 full_name=form.cleaned_data["full_name"],
-
                 email=form.cleaned_data["email"],
-
-                address=form.cleaned_data["address"]
-
+                address=form.cleaned_data["address"],
             )
 
 
@@ -74,3 +72,18 @@ def checkout(request):
 
     )
 
+
+@login_required
+def my_orders(request):
+
+    orders = Order.objects.filter(
+        user=request.user
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "orders/my_orders.html",
+        {
+            "orders": orders
+        }
+    )
