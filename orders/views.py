@@ -6,11 +6,25 @@ from django.contrib import messages
 from .forms import OrderForm
 from .models import Order, OrderItem, Coupon
 from cart.cart import Cart
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 
 def checkout(request):
 
     cart = Cart(request)
+
+    if len(cart) == 0:
+
+        messages.error(
+
+            request,
+
+            "Your cart is empty."
+
+        )
+
+        return redirect("product_list")
 
     coupon = None
 
@@ -188,3 +202,81 @@ def apply_coupon(request):
             )
 
     return redirect("checkout")
+
+
+def payment_page(request):
+
+    if order.status == "paid":
+
+        return redirect("my_orders")
+   
+    order_id = request.session.get("order_id")
+
+    if not order_id:
+
+        return redirect("cart_detail")
+
+    order = get_object_or_404(
+
+        Order,
+
+        id=order_id
+
+    )
+
+    return render(
+
+        request,
+
+        "orders/payment.html",
+
+        {
+
+            "order": order
+
+        }
+
+    )
+
+
+def payment_success(request):
+
+    order_id = request.session.get("order_id")
+
+    if not order_id:
+
+        return redirect("product_list")
+
+    order = get_object_or_404(
+
+        Order,
+
+        id=order_id
+
+    )
+
+    order.status = "paid"
+
+    order.transaction_id = f"TXN-{order.id}-{int(timezone.now().timestamp())}"
+
+    order.paid_at = timezone.now()
+
+    order.save()
+
+    del request.session["order_id"]
+
+    request.session.pop("coupon_id", None)
+
+    return render(
+
+        request,
+
+        "orders/payment_success.html",
+
+        {
+
+            "order": order
+
+        }
+
+    )

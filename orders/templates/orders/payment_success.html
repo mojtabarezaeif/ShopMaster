@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-center">
+
+<h1 class="text-success">
+
+Payment Successful
+
+</h1>
+
+<hr>
+
+<h3>
+
+Order #{{ order.id }}
+
+</h3>
+
+<p>
+
+Transaction ID
+
+</p>
+
+<h4>
+
+{{ order.transaction_id }}
+
+</h4>
+
+<p>
+
+Paid At
+
+</p>
+
+<p>
+
+{{ order.paid_at }}
+
+</p>
+
+<a
+
+href="{% url 'my_orders' %}"
+
+class="btn btn-primary"
+
+>
+
+View My Orders
+
+</a>
+
+</div>
+
+{% endblock %}

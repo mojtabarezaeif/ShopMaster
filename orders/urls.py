@@ -20,4 +20,16 @@ urlpatterns = [
         views.apply_coupon,
         name="apply_coupon"
     ),
+
+    path(
+    "payment/",
+    views.payment_page,
+    name="payment_page",
+    ),
+
+    path(
+        "payment/success/",
+        views.payment_success,
+        name="payment_success",
+    ),
 ]

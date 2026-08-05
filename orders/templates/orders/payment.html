@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Payment</h2>
+
+<hr>
+
+<h4>
+
+Order #{{ order.id }}
+
+</h4>
+
+<p>
+
+Customer:
+
+{{ order.full_name }}
+
+</p>
+
+<p>
+
+Email:
+
+{{ order.email }}
+
+</p>
+
+<p>
+
+Amount to Pay:
+
+<strong>
+
+${{ order.final_price }}
+
+</strong>
+
+</p>
+
+<hr>
+
+<h5>
+
+Choose Payment Method
+
+</h5>
+
+<div class="mb-3">
+
+<button class="btn btn-primary">
+
+Credit Card
+
+</button>
+
+<button class="btn btn-warning">
+
+PayPal
+
+</button>
+
+<button class="btn btn-success">
+
+Bank Transfer
+
+</button>
+
+</div>
+
+<a
+
+href="{% url 'payment_success' %}"
+
+class="btn btn-success btn-lg"
+
+>
+
+Simulate Successful Payment
+
+</a>
+
+{% endblock %}
