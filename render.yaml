@@ -1,0 +1,19 @@
+services:
+
+  - type: web
+
+    name: shopmaster
+
+    env: python
+
+    buildCommand: "./build.sh"
+
+    startCommand: "gunicorn config.wsgi:application"
+
+    envVars:
+
+      - key: SECRET_KEY
+        sync: false
+
+      - key: DEBUG
+        value: False
