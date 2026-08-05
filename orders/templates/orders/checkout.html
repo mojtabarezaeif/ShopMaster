@@ -26,11 +26,105 @@ Place Order
 
 </form>
 
+<hr>
 
-<h3>
-Total:
+<h4>
+
+Coupon
+
+</h4>
+
+<form
+method="POST"
+action="{% url 'apply_coupon' %}"
+>
+
+{% csrf_token %}
+
+<input
+type="text"
+name="code"
+placeholder="Coupon Code"
+>
+
+<button
+class="btn btn-primary"
+>
+
+Apply
+
+</button>
+
+</form>
+
+<hr>
+
+<p>
+
+Subtotal:
+
 ${{ cart.get_total_price }}
-</h3>
 
+</p>
+
+{% if coupon %}
+
+<p>
+
+Discount:
+
+{{ coupon.discount }}%
+
+</p>
+
+<p>
+
+Subtotal:
+
+${{ cart.get_total_price }}
+
+</p>
+
+{% if coupon %}
+
+<p>
+
+Coupon:
+
+{{ coupon.code }}
+
+</p>
+
+<p>
+
+Discount:
+
+{{ coupon.discount }}%
+
+</p>
+
+<p>
+
+Discount Amount:
+
+${{ discount }}
+
+</p>
+
+<p>
+
+<strong>
+
+Final Total:
+
+${{ final_price }}
+
+</strong>
+
+</p>
+
+{% endif %}
+
+{% endif %}
 
 {% endblock %}

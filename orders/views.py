@@ -1,42 +1,78 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import redirect
-from .forms import OrderForm
-from .models import Order, OrderItem
-from cart.cart import Cart
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Coupon
-from .forms import CouponApplyForm
 from django.utils import timezone
 from django.contrib import messages
+
+from .forms import OrderForm
+from .models import Order, OrderItem, Coupon
+from cart.cart import Cart
 
 
 def checkout(request):
 
     cart = Cart(request)
 
+    coupon = None
+
+    coupon_id = request.session.get("coupon_id")
+
+    if coupon_id:
+
+        try:
+
+            coupon = Coupon.objects.get(id=coupon_id)
+
+        except Coupon.DoesNotExist:
+
+            request.session["coupon_id"] = None
+
+    # ----------------------------
+    # محاسبه قیمت‌ها
+    # ----------------------------
+
+    subtotal = cart.get_total_price()
+
+    discount = 0
+
+    final_price = subtotal
+
+    if coupon:
+
+        discount = cart.get_discount(coupon)
+
+        final_price = cart.get_final_price(coupon)
+
+    # ----------------------------
 
     if request.method == "POST":
 
-
         form = OrderForm(request.POST)
-
 
         if form.is_valid():
 
-
             order = Order.objects.create(
+
                 user=request.user if request.user.is_authenticated else None,
+
                 full_name=form.cleaned_data["full_name"],
+
                 email=form.cleaned_data["email"],
+
                 address=form.cleaned_data["address"],
+
+                coupon=coupon,
+
+                subtotal=subtotal,
+
+                discount_amount=discount,
+
+                final_price=final_price,
+
             )
 
             request.session["order_id"] = order.id
 
             for item in cart:
-
 
                 OrderItem.objects.create(
 
@@ -50,17 +86,15 @@ def checkout(request):
 
                 )
 
-
             cart.clear()
 
+            request.session.pop("coupon_id", None)
 
             return redirect("payment_page")
-
 
     else:
 
         form = OrderForm()
-
 
     return render(
 
@@ -72,7 +106,15 @@ def checkout(request):
 
             "form": form,
 
-            "cart": cart
+            "cart": cart,
+
+            "coupon": coupon,
+
+            "discount": discount,
+
+            "subtotal": subtotal,
+
+            "final_price": final_price,
 
         }
 
@@ -83,15 +125,23 @@ def checkout(request):
 def my_orders(request):
 
     orders = Order.objects.filter(
+
         user=request.user
+
     ).order_by("-created_at")
 
     return render(
+
         request,
+
         "orders/my_orders.html",
+
         {
+
             "orders": orders
+
         }
+
     )
 
 
@@ -99,15 +149,13 @@ def apply_coupon(request):
 
     if request.method == "POST":
 
-        form = CouponApplyForm(request.POST)
+        code = request.POST.get("code")
 
-        if form.is_valid():
+        try:
 
-            code = form.cleaned_data["code"]
+            coupon = Coupon.objects.get(
 
-            coupon = Coupon.objects.filter(
-
-                code__iexact=code,
+                code=code,
 
                 active=True,
 
@@ -115,30 +163,28 @@ def apply_coupon(request):
 
                 valid_to__gte=timezone.now()
 
-            ).first()
+            )
 
-            if coupon:
+            request.session["coupon_id"] = coupon.id
 
-                request.session["coupon_id"] = coupon.id
+            messages.success(
 
-                messages.success(
+                request,
 
-                    request,
+                "Coupon applied successfully."
 
-                    "Coupon applied."
+            )
 
-                )
+        except Coupon.DoesNotExist:
 
-            else:
+            request.session["coupon_id"] = None
 
-                request.session["coupon_id"] = None
+            messages.error(
 
-                messages.error(
+                request,
 
-                    request,
+                "Invalid or expired coupon."
 
-                    "Invalid coupon."
+            )
 
-                )
-
-    return redirect("cart_detail")
+    return redirect("checkout")

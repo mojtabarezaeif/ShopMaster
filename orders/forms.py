@@ -20,8 +20,3 @@ class CouponApplyForm(forms.Form):
         max_length=30
     )
 
-class CouponForm(forms.Form):
-
-    code = forms.CharField(
-        max_length=50
-    )

@@ -117,38 +117,26 @@ class Cart:
 
             self.save()
 
-    def get_discount(self):
+    def get_discount(self, coupon):
 
-        coupon_id = self.session.get("coupon_id")
+        if not coupon:
 
-        if coupon_id:
+            return 0
 
-            coupon = Coupon.objects.filter(
+        return (
 
-                id=coupon_id,
+            self.get_total_price()
 
-                active=True
+            *
 
-            ).first()
+            coupon.discount
 
-            if coupon:
+            / 100
 
-                return (
-
-                    self.get_total_price()
-
-                    *
-
-                    coupon.discount
-
-                    / 100
-
-                )
-
-        return 0
+        )
 
 
-    def get_final_price(self):
+    def get_final_price(self, coupon):
 
         return (
 
@@ -156,6 +144,6 @@ class Cart:
 
             -
 
-            self.get_discount()
+            self.get_discount(coupon)
 
         )
