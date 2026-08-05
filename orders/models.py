@@ -114,11 +114,6 @@ class OrderItem(models.Model):
 
         return self.price * self.quantity
 
-    @property
-    def total_price(self):
-
-        return self.price * self.quantity
-
 
 class Coupon(models.Model):
 
