@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>
+
+My Dashboard
+
+</h2>
+
+<hr>
+
+<h4>
+
+Welcome
+
+{{ user.username }}
+
+</h4>
+
+<p>
+
+Email:
+
+{{ user.email }}
+
+</p>
+
+<hr>
+
+<p>
+
+Wishlist Items:
+
+<strong>
+
+{{ wishlist_count }}
+
+</strong>
+
+</p>
+
+<p>
+
+Orders:
+
+<strong>
+
+{{ orders.count }}
+
+</strong>
+
+</p>
+
+<hr>
+
+<a
+href="{% url 'wishlist' %}"
+class="btn btn-primary">
+
+Wishlist
+
+</a>
+
+<a
+href="{% url 'my_orders' %}"
+class="btn btn-success">
+
+My Orders
+
+</a>
+
+<a
+href="{% url 'password_change' %}"
+class="btn btn-warning">
+
+Change Password
+
+</a>
+
+{% endblock %}

@@ -9,4 +9,9 @@ urlpatterns = [
         name="register"
     ),
 
+    path(
+        "dashboard/",
+        views.dashboard,
+        name="dashboard"
+    ),
 ]

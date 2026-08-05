@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from .forms import RegisterForm
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
+from orders.models import Order
+from products.models import Wishlist
 
 def register(request):
 
@@ -41,5 +43,39 @@ def register(request):
             "form": form
 
         }
+
+    )
+
+
+@login_required
+def dashboard(request):
+
+    orders = Order.objects.filter(
+
+        email=request.user.email
+
+    ).order_by("-created_at")
+
+    wishlist_count = Wishlist.objects.filter(
+
+        user=request.user
+
+    ).count()
+
+    context = {
+
+        "orders": orders,
+
+        "wishlist_count": wishlist_count,
+
+    }
+
+    return render(
+
+        request,
+
+        "accounts/dashboard.html",
+
+        context
 
     )
