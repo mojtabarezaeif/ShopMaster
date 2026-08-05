@@ -26,6 +26,20 @@ def payment_success(request):
 
         order.status = "paid"
 
+        for item in order.items.all():
+
+            product = item.product
+
+            product.stock -= item.quantity
+
+            if product.stock <= 0:
+
+                product.stock = 0
+
+                product.available = False
+
+            product.save()
+
         order.transaction_id = str(uuid.uuid4())
 
         order.paid_at = timezone.now()
