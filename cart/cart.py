@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 from orders.models import Coupon
 from products.models import Product
 
@@ -21,17 +22,31 @@ class Cart:
 
         product_id = str(product.id)
 
-        if product_id not in self.cart:
+        current_quantity = self.cart.get(
 
-            self.cart[product_id] = {
+            product_id,
 
-                "quantity": quantity
+            {}
 
-            }
+        ).get(
 
-        else:
+            "quantity",
 
-            self.cart[product_id]["quantity"] += quantity
+            0
+
+        )
+
+        new_quantity = current_quantity + quantity
+
+        if new_quantity > product.stock:
+
+            new_quantity = product.stock
+
+        self.cart[product_id] = {
+
+            "quantity": new_quantity
+
+        }
 
         self.save()
 
@@ -65,12 +80,15 @@ class Cart:
 
         )
 
-
     def __iter__(self):
 
         product_ids = self.cart.keys()
 
-        products = Product.objects.filter(id__in=product_ids)
+        products = Product.objects.filter(
+
+            id__in=product_ids
+
+        )
 
         cart = self.cart.copy()
 
@@ -91,7 +109,6 @@ class Cart:
             )
 
             yield item
-
 
     def get_total_price(self):
 
@@ -121,7 +138,7 @@ class Cart:
 
         if not coupon:
 
-            return 0
+            return Decimal("0")
 
         return (
 
@@ -129,12 +146,13 @@ class Cart:
 
             *
 
-            coupon.discount
+            Decimal(coupon.discount)
 
-            / 100
+            /
+
+            Decimal("100")
 
         )
-
 
     def get_final_price(self, coupon):
 

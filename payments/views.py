@@ -32,11 +32,9 @@ def payment_success(request):
 
             product.stock -= item.quantity
 
-            if product.stock <= 0:
+            if product.stock < 0:
 
                 product.stock = 0
-
-                product.available = False
 
             product.save()
 

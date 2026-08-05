@@ -64,6 +64,20 @@ def checkout(request):
 
         if form.is_valid():
 
+            for item in cart:
+
+                if item["quantity"] > item["product"].stock:
+
+                    messages.error(
+
+                        request,
+
+                        f"{item['product'].name} does not have enough stock."
+
+                    )
+
+                    return redirect("cart_detail")
+
             order = Order.objects.create(
 
                 user=request.user if request.user.is_authenticated else None,

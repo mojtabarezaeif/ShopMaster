@@ -66,31 +66,25 @@
 
         <!-- Stock -->
 
+        {% if product.stock > 0 %}
+
         <p>
 
         Stock:
+        {{ product.stock }}
+        Available
 
-        {% if product.stock > 0 %}
-
-            <span class="text-success">
-
-                {{ product.stock }} Available
-
-            </span>
-
+        </p>
 
         {% else %}
 
-            <span class="text-danger">
+        <p class="text-danger">
 
-                Out of Stock
-
-            </span>
-
-
-        {% endif %}
+        Out of Stock
 
         </p>
+
+        {% endif %}
 
 
 
@@ -98,27 +92,23 @@
 
         {% if product.stock > 0 %}
 
-
         <a
         href="{% url 'cart_add' product.id %}"
-        class="btn btn-success me-2">
+        class="btn btn-success">
 
-            Add to Cart
+        Add to Cart
 
         </a>
 
-
         {% else %}
-
 
         <button
         class="btn btn-secondary"
         disabled>
 
-            Out of Stock
+        Out of Stock
 
         </button>
-
 
         {% endif %}
 

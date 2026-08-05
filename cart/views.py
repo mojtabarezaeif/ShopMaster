@@ -75,11 +75,16 @@ def cart_update(request, product_id):
 
     quantity = int(request.POST.get("quantity"))
 
-    cart.update(product, quantity)
+    # اگر بیشتر از موجودی خواسته شد
+    if quantity > product.stock:
 
-    messages.success(
-        request,
-        "Cart updated successfully."
-    )
+        quantity = product.stock
+
+        messages.warning(
+            request,
+            f"Only {product.stock} item(s) available."
+        )
+
+    cart.update(product, quantity)
 
     return redirect("cart_detail")
