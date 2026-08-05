@@ -4,30 +4,55 @@
 
 <a class="navbar-brand" href="/">ShopMaster</a>
 
-<div class="collapse navbar-collapse">
+<button
+class="navbar-toggler"
+type="button"
+data-bs-toggle="collapse"
+data-bs-target="#navbarNav"
+>
+
+<span class="navbar-toggler-icon"></span>
+
+</button>
+
+<div
+class="collapse navbar-collapse"
+id="navbarNav"
+>
 
 <ul class="navbar-nav ms-auto">
 
 <li class="nav-item">
-<a class="nav-link" href="{% url 'product_list' %}">
-Products
-</a>
-</li>
 
-<li class="nav-item">
-<a class="nav-link" href="{% url 'cart_detail' %}">
-Cart
+<a
+class="nav-link"
+href="{% url 'product_list' %}"
+>
+
+Products
+
 </a>
+
 </li>
 
 <li class="nav-item">
 
 <a
-
 class="nav-link"
+href="{% url 'cart_detail' %}"
+>
 
+Cart
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a
+class="nav-link"
 href="{% url 'wishlist' %}"
-
 >
 
 Wishlist
@@ -38,20 +63,40 @@ Wishlist
 
 {% if user.is_authenticated %}
 
-<li class="nav-item">
+<li class="nav-item dropdown">
 
-<span class="nav-link">
+<a
+class="nav-link dropdown-toggle"
+href="#"
+id="navbarDropdown"
+role="button"
+data-bs-toggle="dropdown"
+aria-expanded="false"
+>
 
 {{ user.username }}
 
-</span>
+</a>
+
+<ul class="dropdown-menu dropdown-menu-end">
+
+<li>
+
+<a
+class="dropdown-item"
+href="{% url 'dashboard' %}"
+>
+
+Dashboard
+
+</a>
 
 </li>
 
-<li class="nav-item">
+<li>
 
 <a
-class="nav-link"
+class="dropdown-item"
 href="{% url 'my_orders' %}"
 >
 
@@ -61,20 +106,64 @@ My Orders
 
 </li>
 
-<li class="nav-item">
+<li>
+
+<a
+class="dropdown-item"
+href="{% url 'wishlist' %}"
+>
+
+Wishlist
+
+</a>
+
+</li>
+
+<li>
+
+<a
+class="dropdown-item"
+href="{% url 'edit_profile' %}"
+>
+
+Edit Profile
+
+</a>
+
+</li>
+
+<li>
+
+<a
+class="dropdown-item"
+href="{% url 'password_change' %}"
+>
+
+Change Password
+
+</a>
+
+</li>
+
+<li>
+
+<hr class="dropdown-divider">
+
+</li>
+
+<li>
 
 <form
 action="{% url 'logout' %}"
 method="post"
-style="display:inline;"
+class="m-0"
 >
 
 {% csrf_token %}
 
 <button
 type="submit"
-class="btn btn-link nav-link"
-style="border:none;"
+class="dropdown-item"
 >
 
 Logout
@@ -82,6 +171,10 @@ Logout
 </button>
 
 </form>
+
+</li>
+
+</ul>
 
 </li>
 
@@ -99,22 +192,6 @@ Login
 </a>
 
 </li>
-
-{% if user.is_authenticated %}
-
-<li class="nav-item">
-
-<a
-class="nav-link"
-href="{% url 'dashboard' %}">
-
-Dashboard
-
-</a>
-
-</li>
-
-{% endif %}
 
 <li class="nav-item">
 
