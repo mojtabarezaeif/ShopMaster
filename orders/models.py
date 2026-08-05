@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from products.models import Product
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Order(models.Model):
 
@@ -49,6 +50,13 @@ class Order(models.Model):
     paid_at = models.DateTimeField(
         null=True,
         blank=True
+    )
+
+    coupon = models.ForeignKey(
+    "Coupon",
+    null=True,
+    blank=True,
+    on_delete=models.SET_NULL
     )
 
     def __str__(self):
@@ -103,16 +111,17 @@ class OrderItem(models.Model):
 
         return self.price * self.quantity
 
-from django.utils import timezone
 
 class Coupon(models.Model):
 
     code = models.CharField(
-        max_length=30,
+        max_length=50,
         unique=True
     )
 
-    discount = models.PositiveIntegerField()
+    discount = models.PositiveIntegerField(
+        help_text="Percent"
+    )
 
     active = models.BooleanField(
         default=True
@@ -121,6 +130,20 @@ class Coupon(models.Model):
     valid_from = models.DateTimeField()
 
     valid_to = models.DateTimeField()
+
+    def is_valid(self):
+
+        now = timezone.now()
+
+        return (
+
+            self.active
+
+            and
+
+            self.valid_from <= now <= self.valid_to
+
+        )
 
     def __str__(self):
 
